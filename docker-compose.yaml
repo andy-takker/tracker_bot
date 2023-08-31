@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD:-password}
+    ports:
+      - 6379:6379
+
+  tracker_bot:
+    image: tracker_bot
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    command: python ./src/cli.py
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_HOST: db
+      POSTGRES_PORT: $POSTGRES_PORT
+
+      REDIS_HOST: redis
+      REDIS_PORT: $REDIS_PORT
+      REDIS_PASSWORD: $REDIS_PASSWORD
+      REDIS_DB: $REDIS_DB
+
+      TELEGRAM_BOT_TOKEN: $TELEGRAM_BOT_TOKEN
+
+volumes:
+  postgres_data:
+    driver: local
