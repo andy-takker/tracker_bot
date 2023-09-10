@@ -1,7 +1,9 @@
-from datetime import time
+from datetime import datetime, time
 from typing import Any, NoReturn
 
-from sqlalchemy import ScalarResult, insert, select
+from sqlalchemy import ScalarResult, and_, func, insert, or_, select
+from sqlalchemy.dialects.postgresql import INTERVAL
+from sqlalchemy.sql.functions import concat
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,19 +16,20 @@ class UserRepository(Repository[User]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(model=User, session=session)
 
-    async def read_by_id(self, user_id: int, strict: bool = False) -> User | None:
-        user = await self._read_by_id(obj_id=user_id)
-        if strict and user is None:
-            raise TrackerBotError
-        return user
+    async def get_by_id_or_none(
+        self,
+        user_id: int,
+    ) -> User | None:
+        return await self._get_by_id_or_none(obj_id=user_id)
 
     async def get_by_id(self, user_id: int) -> User:
-        return await self.read_by_id(user_id=user_id, strict=True)  # type: ignore[return-value]
+        return await self._get_by_id(obj_id=user_id)
 
     async def create(
         self,
+        *,
         user_id: int,
-        frequency: int,
+        period: int,
         time_zone: int,
         start_time: time,
         end_time: time,
@@ -36,7 +39,7 @@ class UserRepository(Repository[User]):
             insert(User)
             .values(
                 id=user_id,
-                frequency=frequency,
+                period=period,
                 time_zone=time_zone,
                 start_time=start_time,
                 end_time=end_time,
@@ -55,7 +58,7 @@ class UserRepository(Repository[User]):
             await self._session.commit()
             return result.one()
 
-    async def update(self, user_id: int, **kwargs: dict[str, Any]) -> User:
+    async def update(self, user_id: int, **kwargs: Any) -> User:
         try:
             return await self._update(User.id == user_id, **kwargs)
         except IntegrityError as e:

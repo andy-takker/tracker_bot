@@ -12,7 +12,7 @@ async def start_command(
 ) -> None:
     if message.from_user is None:
         return
-    user = await provider.user.read_by_id(message.from_user.id)
+    user = await provider.user.get_by_id_or_none(message.from_user.id)
     if user is not None:
         await dialog_manager.start(MainMenuSG.main_menu, mode=StartMode.RESET_STACK)
     else:
@@ -21,6 +21,6 @@ async def start_command(
             " Чтобы начать трекинг времени нужно указать дополнительную информацию",
         )
         await dialog_manager.start(
-            RegistrationSG.set_frequency,
+            RegistrationSG.set_period,
             mode=StartMode.RESET_STACK,
         )

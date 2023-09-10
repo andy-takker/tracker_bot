@@ -10,7 +10,6 @@ RUN poetry export -f requirements.txt --output /bot/requirements.txt \
     --without-hashes --without-urls \
     && pip install -r /bot/requirements.txt
 
-
 ENV PYTHONPATH=/bot/
 
 COPY ./src/ /bot/src

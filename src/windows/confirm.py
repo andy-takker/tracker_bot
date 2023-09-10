@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from src.db.provider import DatabaseProvider
 
 FORMAT_TEMPLATE = """Ваш профиль:
-Как часто спрашивать? Каждые {frequency} мин
+Как часто спрашивать? Каждые {period} мин
 Часовой пояс: {time_zone}
 Время начала рабочего дня: {start_time}
 Время конца рабочего дня: {end_time}
@@ -42,7 +42,7 @@ async def confirm_registration(
 
     await provider.user.create(
         user_id=c.from_user.id,
-        frequency=manager.dialog_data["frequency"],
+        period=manager.dialog_data["period"],
         start_time=parse_time_str(manager.dialog_data["start_time"]).time(),
         end_time=parse_time_str(manager.dialog_data["end_time"]).time(),
         time_zone=manager.dialog_data["time_zone"],
@@ -63,7 +63,7 @@ async def get_confirm_data(
     end_time = parse_time_str(dialog_manager.dialog_data["end_time"]).strftime("%H:%M")
 
     return {
-        "frequency": dialog_manager.dialog_data["frequency"],
+        "period": dialog_manager.dialog_data["period"],
         "time_zone": format_tz(tz),
         "start_time": start_time,
         "end_time": end_time,

@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Literal
+from typing import Any, Literal
 
 from aiogram.fsm.state import State
 from aiogram.types import Message
@@ -17,7 +17,7 @@ FORMAT_MESSAGE = "Укaжитe ввиде - ЧЧ:MM"
 
 MESSAGES = {
     "start_time": f"Bo сколько начать Bac спрашивать?\n{FORMAT_MESSAGE}",
-    "end_time": f"Bo сколько закончить Bac спрашивать?{FORMAT_MESSAGE}",
+    "end_time": f"Bo сколько закончить Bac спрашивать?\n{FORMAT_MESSAGE}",
 }
 
 
@@ -28,27 +28,24 @@ class SetTimeWindow(Window):
         key: TimeType,
         back_state: State | None = None,
     ) -> None:
+        self.back_state = back_state
         handler = time_handler(time_key=key)
-        widgets = [
+        super().__init__(
             Const(
                 f"{MESSAGES[key]}\n",
             ),
             MessageInput(func=handler),
-        ]
-        if back_state is not None:
-            widgets.append(
-                SwitchTo(
-                    text=Const(
-                        "Назад",
-                    ),
-                    state=back_state,
-                    id="back_to_menu",
-                ),
-            )
-        super().__init__(
-            *widgets,
+            SwitchTo(
+                text=Const("Назад"),
+                id="back_to_menu",
+                state=back_state,  # type: ignore[arg-type]
+                when=self.has_back_state,  # type: ignore[arg-type]
+            ),
             state=state,
         )
+
+    def has_back_state(self, *args: Any, **kwargs: Any) -> bool:
+        return self.back_state is not None
 
 
 def time_handler(time_key: TimeType) -> Callable:

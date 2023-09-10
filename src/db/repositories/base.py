@@ -16,8 +16,14 @@ class Repository(ABC, Generic[Model]):
         self._model = model
         self._session = session
 
-    async def _read_by_id(self, obj_id: int) -> Model | None:
+    async def _get_by_id_or_none(self, obj_id: int) -> Model | None:
         return await self._session.get(self._model, obj_id)
+
+    async def _get_by_id(self, obj_id: int) -> Model:
+        obj = await self._get_by_id_or_none(obj_id=obj_id)
+        if obj is None:
+            raise EntityNotFoundError
+        return obj
 
     async def _update(self, *args: Any, **kwargs: Any) -> Model:
         query = update(self._model).where(*args).values(**kwargs).returning(self._model)

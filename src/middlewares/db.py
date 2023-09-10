@@ -21,6 +21,6 @@ class DatabaseMiddleware(BaseMiddleware):
     ) -> Any:
         async with self.session_factory() as session:
             data["provider"] = DatabaseProvider(session=session)
-            result =  await handler(event, data)
-            del data['provider']
+            result = await handler(event, data)
+            del data["provider"]
             return result

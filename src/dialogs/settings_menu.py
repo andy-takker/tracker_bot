@@ -1,9 +1,7 @@
-from aiogram_dialog import Dialog, StartMode, Window, DialogManager
-from aiogram_dialog.widgets.kbd import Start, SwitchTo
-from aiogram_dialog.widgets.text import Const
+from aiogram_dialog import Dialog
 
-from src.states import MainMenuSG, SettingsSG
-from src.windows.set_frequency import SetFrequencyWindow
+from src.states import SettingsSG
+from src.windows.set_period import SetFrequencyWindow
 from src.windows.set_time import SetTimeWindow
 from src.windows.set_time_zone import SetTimeZoneWindow
 from src.windows.settings import SettingsWindow
@@ -13,7 +11,7 @@ def get_dialog() -> Dialog:
     return Dialog(
         SettingsWindow(),
         SetFrequencyWindow(
-            state=SettingsSG.change_frequency,
+            state=SettingsSG.change_period,
             back_state=SettingsSG.menu,
         ),
         SetTimeZoneWindow(
@@ -31,5 +29,3 @@ def get_dialog() -> Dialog:
             back_state=SettingsSG.menu,
         ),
     )
-
-

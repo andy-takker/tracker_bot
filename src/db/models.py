@@ -30,7 +30,7 @@ UTC_START, UTC_END = -11, 12
 
 class User(TimestampMixin, Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    frequency: Mapped[int] = mapped_column(
+    period: Mapped[int] = mapped_column(
         ChoiceType(Frequency, impl=Integer()),
         nullable=False,
         index=True,
@@ -49,7 +49,11 @@ class Track(TimestampMixin, Base):
         nullable=False,
         index=True,
     )
-    worked_at: Mapped[datetime] = mapped_column(
+    started_work_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+    )
+    ended_work_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
     )

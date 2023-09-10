@@ -1,5 +1,5 @@
 # help
-# make venv 
+# make venv
 # run local
 # run test
 # generate new migration

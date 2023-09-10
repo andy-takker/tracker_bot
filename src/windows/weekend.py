@@ -8,6 +8,8 @@ from aiogram_dialog.widgets.text import Const, Format
 from src.states import MainMenuSG, WeekendSG
 
 if TYPE_CHECKING:
+    from aiogram import Bot
+
     from src.db.provider import DatabaseProvider
 
 STATUS = {
@@ -40,6 +42,7 @@ async def on_click_approved(
     manager: DialogManager,
 ) -> None:
     provider: DatabaseProvider = manager.middleware_data["provider"]
+    bot: Bot = manager.middleware_data["bot"]
     old_user = await provider.user.get_by_id(user_id=c.from_user.id)
     user = await provider.user.update(
         user_id=c.from_user.id,
@@ -48,7 +51,10 @@ async def on_click_approved(
 
     status = STATUS[user.is_working]
     manager.show_mode = ShowMode.SEND
-    await c.message.answer(text=f"Статус был изменен на `{status}`")
+    await bot.send_message(
+        chat_id=c.from_user.id,
+        text=f"Статус был изменен на `{status}`",
+    )
     await manager.done()
     manager.show_mode = ShowMode.EDIT
 

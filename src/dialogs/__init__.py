@@ -7,6 +7,7 @@ from src.dialogs.registration import get_dialog as get_registration_dialog
 from src.dialogs.report_generator import get_dialog as get_report_dialog
 from src.dialogs.settings_menu import get_dialog as get_settings_dialog
 from src.dialogs.weekend import get_dialog as get_weekend_dialog
+from src.dialogs.track_time import get_dialog as get_track_time_dialog
 from src.ui_commands import Commands
 
 
@@ -17,11 +18,13 @@ def register_dialogs(router: Router) -> None:
     settings_dialog = get_settings_dialog()
     weekend_dialog = get_weekend_dialog()
     report_dialog = get_report_dialog()
+    track_time_dialog = get_track_time_dialog()
     dialog_router.include_router(registration_dialog)
     dialog_router.include_router(main_menu_dialog)
     dialog_router.include_router(settings_dialog)
     dialog_router.include_router(weekend_dialog)
     dialog_router.include_router(report_dialog)
+    dialog_router.include_router(track_time_dialog)
 
     dialog_router.message(Command(Commands.START))(start_command)
 

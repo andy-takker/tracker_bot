@@ -37,13 +37,6 @@ repos:
       - id: black
         language_version: python3.11
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.280
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-        exclude: ^tests
-
   - repo: https://github.com/pycqa/bandit
     rev: 1.7.5
     hooks:

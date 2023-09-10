@@ -1,14 +1,13 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
+from aiogram import Dispatcher
 from aiogram_dialog import setup_dialogs
 
 from src.config import Settings
 from src.db.factory import create_engine, create_session_factory
 from src.dialogs import register_dialogs
+from src.factory import create_bot, create_storage
 from src.middlewares.db import DatabaseMiddleware
 from src.middlewares.settings import SettingsMiddleware
 from src.ui_commands import set_ui_commands
@@ -24,16 +23,9 @@ async def main() -> None:
     engine = create_engine(connection_uri=settings.build_db_connection_uri())
     session_factory = create_session_factory(engine=engine)
 
-    bot = Bot(token=settings.TELEGRAM_BOT_TOKEN.get_secret_value())
-    if settings.DEBUG:
-        storage = MemoryStorage()
-    else:
-        storage = RedisStorage.from_url(
-            url=settings.build_redis_connection_uri(),
-            key_builder=DefaultKeyBuilder(with_destiny=True),
-        )
+    bot = create_bot(settings=settings)
+    storage = create_storage(settings=settings)
     dp = Dispatcher(storage=storage)
-
     dp.update.outer_middleware(SettingsMiddleware(settings=settings))
     dp.update.outer_middleware(DatabaseMiddleware(session_factory=session_factory))
 
@@ -46,7 +38,7 @@ async def main() -> None:
         await dp.start_polling(bot)
     finally:
         await engine.dispose()
-        logger.info('Stopped')
+        logger.info("Stopped")
 
 
 if __name__ == "__main__":
