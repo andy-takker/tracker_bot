@@ -21,6 +21,9 @@ apscheduler = "^3.10.4"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
 mypy = "^1.5.1"
+black = "^23.9.0"
+bandit = "^1.7.5"
+flake8 = "^6.1.0"
 
 [build-system]
 requires = ["poetry-core"]
