@@ -4,9 +4,9 @@ services:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
     ports:
       - 5432:5432
     volumes:
@@ -15,15 +15,12 @@ services:
   redis:
     image: redis
     restart: always
-    command: redis-server --requirepass ${REDIS_PASSWORD:-password}
+    command: redis-server --requirepass $REDIS_PASSWORD
     ports:
       - 6379:6379
 
   tracker_bot:
-    image: tracker_bot
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: andytakker/tracker_bot:latest
     restart: unless-stopped
     command: python ./src/cli.py
     environment:
@@ -31,10 +28,10 @@ services:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       POSTGRES_DB: $POSTGRES_DB
       POSTGRES_HOST: db
-      POSTGRES_PORT: $POSTGRES_PORT
+      POSTGRES_PORT: 5432
 
       REDIS_HOST: redis
-      REDIS_PORT: $REDIS_PORT
+      REDIS_PORT: 6379
       REDIS_PASSWORD: $REDIS_PASSWORD
       REDIS_DB: $REDIS_DB
 
