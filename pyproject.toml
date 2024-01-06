@@ -8,15 +8,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-aiogram = "3.0.0rc2"
-aiogram-dialog = "2.0b22"
-sqlalchemy = "^2.0.19"
-pydantic-settings = "^2.0.3"
-asyncpg = "^0.28.0"
-sqlalchemy-utils = "^0.41.1"
-alembic = "^1.11.3"
-redis = "^5.0.0"
-apscheduler = "^3.10.4"
+aiogram = "^3.3.0"
+aiogram-dialog = "^2.1.0"
+sqlalchemy = "^2.0.25"
+alembic = "^1.13.1"
+asyncpg = "^0.29.0"
+redis = "^5.0.1"
+aiomisc = "^17.3.41"
+aiomisc-dependency = "^0.1.20"
+configargparse = "^1.7"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
@@ -42,10 +42,3 @@ disallow_untyped_defs = true
 ignore_missing_imports = false
 no_implicit_optional = true
 
-[[tool.mypy.overrides]]
-module = "gunicorn.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "sqlalchemy_utils.*"
-ignore_missing_imports = true
